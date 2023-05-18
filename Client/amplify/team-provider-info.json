@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-fridgehub-dev-40640-authRole",
+      "UnauthRoleArn": "arn:aws:iam::774443809921:role/amplify-fridgehub-dev-40640-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::774443809921:role/amplify-fridgehub-dev-40640-authRole",
+      "Region": "eu-north-1",
+      "DeploymentBucketName": "amplify-fridgehub-dev-40640-deployment",
+      "UnauthRoleName": "amplify-fridgehub-dev-40640-unauthRole",
+      "StackName": "amplify-fridgehub-dev-40640",
+      "StackId": "arn:aws:cloudformation:eu-north-1:774443809921:stack/amplify-fridgehub-dev-40640/a1d060a0-f520-11ed-86cb-0e838d8e865c",
+      "AmplifyAppId": "dvp6siuk2yk3m"
+    },
+    "categories": {
+      "auth": {
+        "fridgehub4a43e1b2": {}
+      }
+    }
+  }
+}

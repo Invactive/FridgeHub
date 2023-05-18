@@ -1,0 +1,60 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-fridgehub-dev-40640-authRole",
+      "UnauthRoleArn": "arn:aws:iam::774443809921:role/amplify-fridgehub-dev-40640-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::774443809921:role/amplify-fridgehub-dev-40640-authRole",
+      "Region": "eu-north-1",
+      "DeploymentBucketName": "amplify-fridgehub-dev-40640-deployment",
+      "UnauthRoleName": "amplify-fridgehub-dev-40640-unauthRole",
+      "StackName": "amplify-fridgehub-dev-40640",
+      "StackId": "arn:aws:cloudformation:eu-north-1:774443809921:stack/amplify-fridgehub-dev-40640/a1d060a0-f520-11ed-86cb-0e838d8e865c",
+      "AmplifyAppId": "dvp6siuk2yk3m"
+    }
+  },
+  "auth": {
+    "fridgehub4a43e1b2": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "frontendAuthConfig": {
+        "socialProviders": [
+          "AMAZON"
+        ],
+        "usernameAttributes": [],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-fridgehub-dev-40640-deployment/amplify-cfn-templates/auth/fridgehub4a43e1b2-cloudformation-template.json",
+        "logicalId": "authfridgehub4a43e1b2"
+      },
+      "lastPushTimeStamp": "2023-05-18T02:22:11.965Z",
+      "output": {
+        "UserPoolId": "eu-north-1_WKszmjyr7",
+        "AppClientIDWeb": "3slr5rt0h0fjefrggh5v029dd5",
+        "AppClientID": "2o444oaausfp6lqobvr9tcs96u",
+        "HostedUIDomain": "fridgehub-dev",
+        "IdentityPoolId": "eu-north-1:da8941af-7b60-4419-ba01-9da0474f3dd0",
+        "UserPoolArn": "arn:aws:cognito-idp:eu-north-1:774443809921:userpool/eu-north-1_WKszmjyr7",
+        "IdentityPoolName": "fridgehub4a43e1b2_identitypool_4a43e1b2__dev",
+        "OAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"fridgehub://\",\"http://localhost:3000/\"],\"LogoutURLs\":[\"fridgehub://\",\"http://localhost:3000/\"]}",
+        "UserPoolName": "fridgehub4a43e1b2_userpool_4a43e1b2"
+      },
+      "lastPushDirHash": "pXGyK07TM7ouKXjsKBVovl//P0Y="
+    }
+  }
+}

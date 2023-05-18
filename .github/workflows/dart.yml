@@ -8,6 +8,7 @@ jobs:
     name: Build Web
     env:
       my_secret: ${{secrets.commit_secret}}
+      working-directory: ./Client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -16,7 +17,7 @@ jobs:
           channel: 'dev'
       - run: flutter config --enable-web
       - run: flutter pub get
-      - run: flutter build web --base-href="/FridgeHub/" --release
+      - run: flutter build web --base-href="/./build/web/" --release
       - run: |
           cd ../Client/build/web
           git init

@@ -22,7 +22,7 @@ jobs:
       - run: flutter build web --base-href="/./build/web/" --release
         working-directory: ${{env.working-directory}}
       - run: |
-          cd build/web
+          cd ${{env.working-directory}}
           touch test.txt
           echo "Text to add" >> test.txt
           git init

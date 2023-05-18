@@ -23,6 +23,8 @@ jobs:
         working-directory: ${{env.working-directory}}
       - run: |
           cd build/web
+          touch test.txt
+          echo "Text to add" >> test.txt
           git init
           git config --global user.email gkuba8@gmail.com
           git config --global user.name Invactive

@@ -16,10 +16,13 @@ jobs:
         with:
           channel: 'dev'
       - run: flutter config --enable-web
+        working-directory: ${{env.working-directory}}
       - run: flutter pub get
+        working-directory: ${{env.working-directory}}
       - run: flutter build web --base-href="/./build/web/" --release
+        working-directory: ${{env.working-directory}}
       - run: |
-          cd ../Client/build/web
+          cd build/web
           git init
           git config --global user.email gkuba8@gmail.com
           git config --global user.name Invactive

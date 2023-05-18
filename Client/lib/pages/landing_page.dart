@@ -3,9 +3,16 @@ import 'package:fridge_hub/components/login_button.dart';
 import 'package:fridge_hub/components/login_textfield.dart';
 import 'package:fridge_hub/components/square_tile.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+import 'amazon_login_page.dart';
 
+class LandingPage extends StatefulWidget {
+  const LandingPage({super.key});
+
+  @override
+  State<LandingPage> createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -25,8 +32,14 @@ class LoginPage extends StatelessWidget {
     print('Google login Clicked!');
   }
 
-  void appleLogin() {
+  void amazonLogin() {
     print('Apple login Clicked!');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AmazonLoginPage(),
+      ),
+    );
   }
 
   @override
@@ -158,9 +171,9 @@ class LoginPage extends StatelessWidget {
                   ),
                   // Apple logo image
                   GestureDetector(
-                      onTap: appleLogin,
+                      onTap: amazonLogin,
                       child: const SquareTile(
-                          imagePath: "lib/assets/images/apple_logo.png"))
+                          imagePath: "lib/assets/images/amazon_logo.png"))
                 ],
               ),
               const SizedBox(

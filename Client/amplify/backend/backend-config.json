@@ -1,6 +1,6 @@
 {
   "auth": {
-    "fridgehub4a43e1b2": {
+    "fridgehubfdf92607": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -15,10 +15,10 @@
         "signupAttributes": [
           "EMAIL"
         ],
-        "socialProviders": [
-          "AMAZON"
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
         ],
-        "usernameAttributes": [],
         "verificationMechanisms": [
           "EMAIL"
         ]

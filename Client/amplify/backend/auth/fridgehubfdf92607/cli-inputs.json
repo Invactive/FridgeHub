@@ -1,10 +1,10 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "identityPoolName": "fridgehub4a43e1b2_identitypool_4a43e1b2",
+    "identityPoolName": "fridgehubfdf92607_identitypool_fdf92607",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "fridge4a43e1b2",
-    "userPoolName": "fridgehub4a43e1b2_userpool_4a43e1b2",
+    "resourceNameTruncated": "fridgefdf92607",
+    "userPoolName": "fridgehubfdf92607_userpool_fdf92607",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -31,19 +31,15 @@
     "userpoolClientReadAttributes": [
       "email"
     ],
-    "userpoolClientLambdaRole": "fridge4a43e1b2_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "fridgefdf92607_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "4a43e1b2",
-    "resourceName": "fridgehub4a43e1b2",
+    "sharedId": "fdf92607",
+    "resourceName": "fridgehubfdf92607",
     "authSelections": "identityPoolAndUserPool",
-    "useDefault": "defaultSocial",
-    "hostedUI": true,
-    "hostedUIDomainName": "fridgehub",
-    "authProvidersUserPool": [
-      "LoginWithAmazon"
+    "useDefault": "default",
+    "usernameAttributes": [
+      "email"
     ],
-    "hostedUIProviderMeta": "[{\"ProviderName\":\"LoginWithAmazon\",\"authorize_scopes\":\"profile profile:user_id\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"user_id\"}}]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"fridgehub://\",\"http://localhost:3000/\"],\"LogoutURLs\":[\"fridgehub://\",\"http://localhost:3000/\"]}",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,

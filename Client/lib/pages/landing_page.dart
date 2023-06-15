@@ -1,9 +1,13 @@
+// Amplify Flutter Packages
+import 'package:amplify_authenticator/amplify_authenticator.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+// Generated in previous step
+import '../amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
 import 'package:fridge_hub/components/login_button.dart';
 import 'package:fridge_hub/components/login_textfield.dart';
 import 'package:fridge_hub/components/square_tile.dart';
-
-import 'amazon_login_page.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -13,6 +17,34 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  @override
+  initState() {
+    super.initState();
+    _configureAmplify();
+  }
+
+  Future<void> _configureAmplify() async {
+    try {
+      final auth = AmplifyAuthCognito();
+      await Amplify.addPlugin(auth);
+
+      // call Amplify.configure to use the initialized categories in your app
+      await Amplify.configure(amplifyconfig);
+    } on Exception catch (e) {
+      safePrint('An error occurred configuring Amplify: $e');
+    }
+  }
+
+  Future<bool> isUserSignedIn() async {
+    final result = await Amplify.Auth.fetchAuthSession();
+    return result.isSignedIn;
+  }
+
+  Future<AuthUser> getCurrentUser() async {
+    final user = await Amplify.Auth.getCurrentUser();
+    return user;
+  }
+
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -32,185 +64,20 @@ class _LandingPageState extends State<LandingPage> {
     print('Google login Clicked!');
   }
 
-  void amazonLogin() {
-    print('Apple login Clicked!');
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const AmazonLoginPage(),
-      ),
-    );
+  void facebookLogin() {
+    print('Facebook login Clicked!');
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.grey[200],
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.grey[200]!,
-                Colors.grey[500]!,
-              ],
-            ),
+    return Authenticator(
+      initialStep: AuthenticatorStep.signIn,
+      child: MaterialApp(
+        builder: Authenticator.builder(),
+        home: const Scaffold(
+          body: Center(
+            child: Text('You are logged in!'),
           ),
-          child: SafeArea(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // logo
-              const Image(
-                image: AssetImage("lib/assets/images/fridgehub_logo.png"),
-                alignment: Alignment.topCenter,
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              // welcome back text
-              const Text("Welcome back, you've been missed!",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontFamily: "Lato",
-                    fontWeight: FontWeight.w700,
-                  )),
-              const SizedBox(
-                height: 40,
-              ),
-
-              // username textfield
-              LoginTextField(
-                controller: usernameController,
-                hintText: 'Username',
-                obscureText: false,
-                prefixIcon: const Icon(Icons.lock),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              // password textfield
-              LoginTextField(
-                controller: passwordController,
-                hintText: 'Password',
-                obscureText: true,
-                prefixIcon: const Icon(Icons.person),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              // forgot password
-              GestureDetector(
-                onTap: forgotPassword,
-                child: const Text("Forgot password?",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontFamily: "Lato",
-                      fontWeight: FontWeight.w600,
-                    )),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              // sign in button
-              LoginButton(
-                onTap: signIn,
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              // or continue with
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(children: [
-                  Expanded(
-                    child: Divider(
-                      thickness: 0.5,
-                      color: Colors.grey[800],
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      "Or continue with",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontFamily: "Lato",
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                      child: Divider(
-                    thickness: 0.5,
-                    color: Colors.grey[800],
-                  ))
-                ]),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              // google and apple sign in buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Google logo image
-                  GestureDetector(
-                      onTap: googleLogin,
-                      child: const SquareTile(
-                          imagePath: "lib/assets/images/google_logo.png")),
-                  const SizedBox(
-                    width: 30,
-                  ),
-                  // Apple logo image
-                  GestureDetector(
-                      onTap: amazonLogin,
-                      child: const SquareTile(
-                          imagePath: "lib/assets/images/amazon_logo.png"))
-                ],
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              // not a member? register now!
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Not a member?",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontFamily: "Lato",
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  GestureDetector(
-                    onTap: registerNow,
-                    child: const Text(
-                      "Register now!",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontFamily: "Lato",
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  )
-                ],
-              )
-            ],
-          )),
         ),
       ),
     );

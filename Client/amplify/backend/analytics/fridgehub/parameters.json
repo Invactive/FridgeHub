@@ -1,0 +1,21 @@
+{
+    "appName": "fridgehub",
+    "roleName": "pinpointLambdaRole625c9bcc",
+    "cloudformationPolicyName": "cloudformationPolicy625c9bcc",
+    "cloudWatchPolicyName": "cloudWatchPolicy625c9bcc",
+    "pinpointPolicyName": "pinpointPolicy625c9bcc",
+    "authPolicyName": "pinpoint_amplify_625c9bcc",
+    "unauthPolicyName": "pinpoint_amplify_625c9bcc",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    }
+}

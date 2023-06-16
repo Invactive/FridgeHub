@@ -1,4 +1,10 @@
 {
+  "analytics": {
+    "fridgehub": {
+      "providerPlugin": "awscloudformation",
+      "service": "Pinpoint"
+    }
+  },
   "auth": {
     "fridgehubfdf92607": {
       "customAuth": false,

@@ -6,7 +6,7 @@ import 'package:amplify_analytics_pinpoint/amplify_analytics_pinpoint.dart';
 import 'package:fridge_hub/pages/register_code_page.dart';
 import 'package:fridge_hub/pages/home_page.dart';
 import 'package:fridge_hub/pages/register_page.dart';
-import 'package:fridge_hub/pages/reset_password_page.dart';
+import 'package:fridge_hub/pages/forgot_password_page.dart';
 
 // Generated in previous step
 import '../amplifyconfiguration.dart';
@@ -16,6 +16,7 @@ import 'package:fridge_hub/components/custom_textfield.dart';
 import 'package:fridge_hub/components/custom_password_textfield.dart';
 import 'package:fridge_hub/components/animated_image_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:page_transition/page_transition.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -120,9 +121,14 @@ class _LoginPageState extends State<LoginPage> {
         break;
       case AuthSignInStep.done:
         safePrint('Sign in is complete');
-        Navigator.push(
+        Navigator.pushAndRemoveUntil<dynamic>(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: const HomePage(),
+            duration: const Duration(milliseconds: 400),
+          ),
+          (route) => false,
         );
         break;
     }
@@ -149,23 +155,31 @@ class _LoginPageState extends State<LoginPage> {
 
   void resetPassword() {
     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ResetPasswordPage()),
-    );
+        context,
+        PageTransition(
+          type: PageTransitionType.fade,
+          child: const ForgotPasswordPage(),
+          duration: const Duration(milliseconds: 400),
+        ));
   }
 
   void registerNow() {
     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const RegisterPage()),
-    );
+        context,
+        PageTransition(
+          type: PageTransitionType.fade,
+          child: const RegisterPage(),
+          duration: const Duration(milliseconds: 400),
+        ));
   }
 
   void googleLogin() {
+    // TODO AWS Google auth
     safePrint('Google login Clicked!');
   }
 
   void facebookLogin() {
+    // TODO AWS Facebook auth
     safePrint('Facebook login Clicked!');
   }
 
@@ -201,6 +215,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               // welcome back text
               const Text("Welcome back, you've been missed!",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -227,15 +242,15 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: 'Password',
                 padding: 40.0,
                 prefixIcon: const Icon(Icons.lock),
-                suffixVisibilityIcon: true,
               ),
               const SizedBox(
                 height: 15,
               ),
               // forgot password
               GestureDetector(
-                onTap: () => resetPassword,
+                onTap: resetPassword,
                 child: const Text("Forgot password?",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 15,
@@ -269,6 +284,7 @@ class _LoginPageState extends State<LoginPage> {
                     padding: EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
                       "Or continue with",
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 15,
@@ -291,19 +307,18 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Google logo image
-                  GestureDetector(
-                      onTap: () => googleLogin,
-                      child: const AnimatedImageButton(
-                          imagePath: "lib/assets/images/google_logo.png")),
+                  AnimatedImageButton(
+                    imagePath: "lib/assets/images/google_logo.png",
+                    onPressed: () => googleLogin(),
+                  ),
                   const SizedBox(
                     width: 30,
                   ),
                   // Apple logo image
-                  GestureDetector(
-                      onTap: facebookLogin,
-                      child: const AnimatedImageButton(
-                          imagePath: "lib/assets/images/facebook_logo.png"))
+                  AnimatedImageButton(
+                    imagePath: "lib/assets/images/facebook_logo.png",
+                    onPressed: () => facebookLogin(),
+                  ),
                 ],
               ),
               const SizedBox(

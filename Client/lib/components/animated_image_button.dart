@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 
 class AnimatedImageButton extends StatelessWidget {
+  final VoidCallback onPressed;
   final String imagePath;
   const AnimatedImageButton({
     super.key,
     required this.imagePath,
+    required this.onPressed,
   });
 
   @override
@@ -13,7 +15,7 @@ class AnimatedImageButton extends StatelessWidget {
     return BouncingWidget(
         duration: const Duration(milliseconds: 100),
         scaleFactor: 1.5,
-        onPressed: () {},
+        onPressed: onPressed,
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(color: Colors.white24),

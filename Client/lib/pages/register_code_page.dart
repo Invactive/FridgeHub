@@ -13,7 +13,9 @@ import 'package:fridge_hub/components/animated_text_button.dart';
 import 'package:fridge_hub/components/custom_textfield.dart';
 import 'package:fridge_hub/components/animated_image_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter_verification_code/flutter_verification_code.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
+import 'dart:async';
 
 class RegisterCodePage extends StatefulWidget {
   final String email;
@@ -32,7 +34,10 @@ class _RegisterCodePageState extends State<RegisterCodePage> {
 
   late String? emailDestination;
   late String? deliveryMedium;
-  final codeController = TextEditingController();
+  StreamController<ErrorAnimationType> errorController =
+      StreamController<ErrorAnimationType>();
+
+  String code = "";
 
   Future<void> resendSignUpCode({
     required String email,
@@ -50,6 +55,17 @@ class _RegisterCodePageState extends State<RegisterCodePage> {
           fontSize: 16.0);
     } on AuthException catch (e) {
       safePrint('Error confirming user: ${e.message}');
+      String message = e.message.endsWith('.')
+          ? e.message.substring(0, e.message.length - 1)
+          : e.message;
+      Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[400],
+          textColor: Colors.black,
+          fontSize: 16.0);
     }
   }
 
@@ -65,6 +81,17 @@ class _RegisterCodePageState extends State<RegisterCodePage> {
       await _handleSignUpResult(result);
     } on AuthException catch (e) {
       safePrint('Error confirming user: ${e.message}');
+      String message = e.message.endsWith('.')
+          ? e.message.substring(0, e.message.length - 1)
+          : e.message;
+      Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[400],
+          textColor: Colors.black,
+          fontSize: 16.0);
     }
   }
 
@@ -76,11 +103,15 @@ class _RegisterCodePageState extends State<RegisterCodePage> {
         break;
       case AuthSignUpStep.done:
         safePrint('Sign up is complete');
-        Navigator.push(
+        Navigator.pushAndRemoveUntil<dynamic>(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          PageTransition(
+            type: PageTransitionType.fade,
+            child: const HomePage(),
+            duration: const Duration(milliseconds: 400),
+          ),
+          (route) => false,
         );
-        Navigator.of(context).popUntil(ModalRoute.withName("/LoginPage"));
         break;
     }
   }
@@ -126,6 +157,7 @@ class _RegisterCodePageState extends State<RegisterCodePage> {
               ),
               // welcome back text
               const Text("Please enter a confirmation code",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -137,6 +169,7 @@ class _RegisterCodePageState extends State<RegisterCodePage> {
               ),
               const Text(
                   "A confirmation code has been sent to your E-Mail address",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 15,
@@ -147,11 +180,35 @@ class _RegisterCodePageState extends State<RegisterCodePage> {
                 height: 25,
               ),
               // code textfield
-              CustomTextField(
-                controller: codeController,
-                hintText: 'Code',
-                obscureText: false,
-                padding: 80.0,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: PinCodeTextField(
+                  length: 6,
+                  obscureText: false,
+                  animationType: AnimationType.fade,
+                  cursorColor: Colors.blue,
+                  hapticFeedbackTypes: HapticFeedbackTypes.heavy,
+                  pinTheme: PinTheme(
+                    activeColor: Colors.black,
+                    selectedColor: Colors.blue,
+                    inactiveColor: Colors.grey,
+                  ),
+                  textStyle: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: "Lato",
+                    fontWeight: FontWeight.w700,
+                  ),
+                  keyboardType: TextInputType.number,
+                  animationDuration: const Duration(milliseconds: 100),
+                  errorAnimationController: errorController,
+                  onChanged: (value) {
+                    setState(() {
+                      code = value;
+                    });
+                  },
+                  appContext: context,
+                ),
               ),
               const SizedBox(
                 height: 15,
@@ -160,6 +217,7 @@ class _RegisterCodePageState extends State<RegisterCodePage> {
               GestureDetector(
                 onTap: () => resendSignUpCode(email: widget.email),
                 child: const Text("Resend code",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 15,
@@ -175,7 +233,7 @@ class _RegisterCodePageState extends State<RegisterCodePage> {
                 text: "Confirm",
                 onPressed: () => confirmUser(
                   email: widget.email,
-                  confirmationCode: codeController.text,
+                  confirmationCode: code,
                 ),
               ),
               const SizedBox(

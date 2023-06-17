@@ -5,7 +5,6 @@ class CustomPasswordTextField extends StatefulWidget {
   final String hintText;
   final double padding;
   final Icon? prefixIcon;
-  final bool suffixVisibilityIcon;
 
   const CustomPasswordTextField({
     super.key,
@@ -13,7 +12,6 @@ class CustomPasswordTextField extends StatefulWidget {
     required this.hintText,
     required this.padding,
     this.prefixIcon,
-    required this.suffixVisibilityIcon,
   });
 
   @override

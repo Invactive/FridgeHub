@@ -10,8 +10,10 @@ import '../amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
 import 'package:fridge_hub/components/animated_text_button.dart';
 import 'package:fridge_hub/components/custom_textfield.dart';
+import 'package:fridge_hub/components/custom_password_textfield.dart';
 import 'package:fridge_hub/components/animated_image_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:page_transition/page_transition.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -96,12 +98,14 @@ class _RegisterPageState extends State<RegisterPage> {
       'Please check your ${codeDeliveryDetails.deliveryMedium.name} for the code.',
     );
     Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => RegisterCodePage(
-                email: emailController.text,
-              )),
-    );
+        context,
+        PageTransition(
+          type: PageTransitionType.fade,
+          child: RegisterCodePage(
+            email: emailController.text,
+          ),
+          duration: const Duration(milliseconds: 400),
+        ));
   }
 
   @override
@@ -168,10 +172,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 height: 15,
               ),
               // password textfield
-              CustomTextField(
+              CustomPasswordTextField(
                 controller: passwordController,
                 hintText: 'Password',
-                obscureText: true,
                 padding: 40.0,
                 prefixIcon: const Icon(Icons.lock),
               ),

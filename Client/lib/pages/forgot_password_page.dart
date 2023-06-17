@@ -13,21 +13,27 @@ import 'package:fridge_hub/components/animated_text_button.dart';
 import 'package:fridge_hub/components/custom_textfield.dart';
 import 'package:fridge_hub/components/animated_image_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
+import 'dart:async';
 
-class ResetPasswordPage extends StatefulWidget {
-  const ResetPasswordPage({super.key});
+class ForgotPasswordPage extends StatefulWidget {
+  const ForgotPasswordPage({super.key});
 
   @override
-  State<ResetPasswordPage> createState() => _ResetPasswordPageState();
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class _ResetPasswordPageState extends State<ResetPasswordPage> {
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   @override
   initState() {
     super.initState();
   }
 
+  StreamController<ErrorAnimationType> errorController =
+      StreamController<ErrorAnimationType>();
+
   final emailController = TextEditingController();
+  String code = "";
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +65,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               const SizedBox(
                 height: 25,
               ),
-              // welcome back text
-              const Text("Please enter your E-Mail",
+              // forgot password text
+              const Text("Forgot password?",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -70,8 +77,19 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               const SizedBox(
                 height: 5,
               ),
+              const Text("Enter the email address associated with your account",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontFamily: "Lato",
+                    fontWeight: FontWeight.w400,
+                  )),
               const Text(
-                  "A confirmation code has been sent to your E-Mail address",
+                  "We will send you a verification code to check your authenticity",
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 15,
@@ -79,14 +97,38 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     fontWeight: FontWeight.w400,
                   )),
               const SizedBox(
-                height: 25,
+                height: 15,
               ),
               // code textfield
-              CustomTextField(
-                controller: emailController,
-                hintText: 'Code',
-                obscureText: false,
-                padding: 80.0,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: PinCodeTextField(
+                  length: 6,
+                  obscureText: false,
+                  animationType: AnimationType.fade,
+                  cursorColor: Colors.blue,
+                  hapticFeedbackTypes: HapticFeedbackTypes.heavy,
+                  pinTheme: PinTheme(
+                    activeColor: Colors.black,
+                    selectedColor: Colors.blue,
+                    inactiveColor: Colors.grey,
+                  ),
+                  textStyle: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: "Lato",
+                    fontWeight: FontWeight.w700,
+                  ),
+                  keyboardType: TextInputType.number,
+                  animationDuration: const Duration(milliseconds: 100),
+                  errorAnimationController: errorController,
+                  onChanged: (value) {
+                    setState(() {
+                      code = value;
+                    });
+                  },
+                  appContext: context,
+                ),
               ),
               const SizedBox(
                 height: 15,
@@ -109,7 +151,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               AnimatedTextButton(
                 text: "Confirm",
                 // TODO
-                onPressed: () => (),
+                onPressed: () {
+                  if (code.length != 6) {}
+                  safePrint(code);
+                },
               ),
               const SizedBox(
                 height: 15,

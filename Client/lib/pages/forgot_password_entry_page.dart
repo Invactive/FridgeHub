@@ -3,77 +3,74 @@ import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_analytics_pinpoint/amplify_analytics_pinpoint.dart';
-import 'package:fridge_hub/pages/register_code_page.dart';
+import 'package:fridge_hub/pages/home_page.dart';
+import 'package:fridge_hub/pages/login_page.dart';
+import 'package:fridge_hub/pages/new_password_page.dart';
 
 // Generated in previous step
 import '../amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
 import 'package:fridge_hub/components/animated_text_button.dart';
 import 'package:fridge_hub/components/custom_textfield.dart';
-import 'package:fridge_hub/components/custom_password_textfield.dart';
 import 'package:fridge_hub/components/animated_image_button.dart';
+import 'package:fridge_hub/pages/forgot_password_code_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:email_validator/email_validator.dart';
+import 'dart:async';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class ForgotPasswordEntryPage extends StatefulWidget {
+  const ForgotPasswordEntryPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<ForgotPasswordEntryPage> createState() =>
+      _ForgotPasswordEntryPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _ForgotPasswordEntryPageState extends State<ForgotPasswordEntryPage> {
   @override
   initState() {
     super.initState();
   }
 
-  final usernameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  StreamController<ErrorAnimationType> errorController =
+      StreamController<ErrorAnimationType>();
 
-  Future<void> signUp({
-    required String username,
-    required String password,
-    required String email,
-    String? phoneNumber,
-  }) async {
+  final emailController = TextEditingController();
+
+  bool validateEmail(TextEditingController email) {
+    final bool isValid = EmailValidator.validate(email.text.trim());
+    if (isValid) {
+      return true;
+    } else {
+      Fluttertoast.showToast(
+          msg: "Enter a valid E-Mail",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[400],
+          textColor: Colors.black,
+          fontSize: 16.0);
+    }
+    return false;
+  }
+
+  Future<void> resetPassword(String username) async {
     try {
-      final userAttributes = {
-        AuthUserAttributeKey.email: email,
-        AuthUserAttributeKey.nickname: username,
-        if (phoneNumber != null) AuthUserAttributeKey.phoneNumber: phoneNumber,
-      };
-      final result = await Amplify.Auth.signUp(
-        username: email,
-        password: password,
-        options: SignUpOptions(
-          userAttributes: userAttributes,
-        ),
+      final result = await Amplify.Auth.resetPassword(
+        username: username,
       );
-      await _handleSignUpResult(result);
+      await _handleResetPasswordResult(result);
     } on AuthException catch (e) {
-      safePrint('Error signing up user: ${e.message}');
+      safePrint('Error resetting password: ${e.message}');
       String message = e.message.endsWith('.')
           ? e.message.substring(0, e.message.length - 1)
           : e.message;
       Fluttertoast.showToast(
-          msg: username.isEmpty
-              ? 'Please enter valid username'
-              : (message.contains('Invalid email address format') ||
-                          message.contains(
-                              'Value at \'username\' failed to satisfy constraint')) &&
-                      username.isNotEmpty
-                  ? 'Please enter valid E-Mail'
-                  : validateEmail(emailController)
-                      ? 'Please enter valid E-Mail'
-                      : message.contains(
-                              'Value at \'password\' failed to satisfy constraint')
-                          ? 'Please enter valid password'
-                          : message.contains('Password not long enough')
-                              ? 'Password has to be at least 8 characters long'
-                              : message,
+          msg: message.contains('Username/client id combination not found')
+              ? 'E-Mail address not found'
+              : message,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
@@ -83,14 +80,14 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  Future<void> _handleSignUpResult(SignUpResult result) async {
-    switch (result.nextStep.signUpStep) {
-      case AuthSignUpStep.confirmSignUp:
+  Future<void> _handleResetPasswordResult(ResetPasswordResult result) async {
+    switch (result.nextStep.updateStep) {
+      case AuthResetPasswordStep.confirmResetPasswordWithCode:
         final codeDeliveryDetails = result.nextStep.codeDeliveryDetails!;
         _handleCodeDelivery(codeDeliveryDetails);
         break;
-      case AuthSignUpStep.done:
-        safePrint('Sign up is complete');
+      case AuthResetPasswordStep.done:
+        safePrint('Successfully reset password');
         break;
     }
   }
@@ -104,16 +101,9 @@ class _RegisterPageState extends State<RegisterPage> {
         context,
         PageTransition(
           type: PageTransitionType.fade,
-          child: RegisterCodePage(
-            email: emailController.text,
-          ),
+          child: NewPasswordPage(email: emailController.text),
           duration: const Duration(milliseconds: 400),
         ));
-  }
-
-  bool validateEmail(TextEditingController email) {
-    safePrint(EmailValidator.validate(email.text.trim()));
-    return !EmailValidator.validate(email.text.trim());
   }
 
   @override
@@ -146,8 +136,9 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(
                 height: 25,
               ),
-              // welcome back text
-              const Text("Create your profile to start!",
+              // forgot password text
+              const Text("Forgot password?",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -155,16 +146,27 @@ class _RegisterPageState extends State<RegisterPage> {
                     fontWeight: FontWeight.w700,
                   )),
               const SizedBox(
-                height: 40,
+                height: 5,
               ),
-              // username textfield
-              CustomTextField(
-                controller: usernameController,
-                hintText: 'Username',
-                obscureText: false,
-                padding: 40.0,
-                prefixIcon: const Icon(Icons.person),
-              ),
+              const Text("Enter the email address associated with your account",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontFamily: "Lato",
+                    fontWeight: FontWeight.w400,
+                  )),
+              const Text(
+                  "We will send you a verification code to check your authenticity",
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontFamily: "Lato",
+                    fontWeight: FontWeight.w400,
+                  )),
               const SizedBox(
                 height: 15,
               ),
@@ -179,24 +181,13 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(
                 height: 15,
               ),
-              // password textfield
-              CustomPasswordTextField(
-                controller: passwordController,
-                hintText: 'Password',
-                padding: 40.0,
-                prefixIcon: const Icon(Icons.lock),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              // sign up button
+              // confirm button
               AnimatedTextButton(
-                text: "Sign Up",
-                onPressed: () => signUp(
-                  username: usernameController.text,
-                  email: emailController.text,
-                  password: passwordController.text,
-                ),
+                text: "Confirm",
+                // TODO resend password
+                onPressed: () => validateEmail(emailController)
+                    ? resetPassword(emailController.text)
+                    : null,
               ),
               const SizedBox(
                 height: 15,

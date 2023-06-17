@@ -4,6 +4,7 @@ import 'package:bouncing_widget/bouncing_widget.dart';
 class AnimatedImageButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String imagePath;
+
   const AnimatedImageButton({
     super.key,
     required this.imagePath,

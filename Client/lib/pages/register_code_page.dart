@@ -103,11 +103,19 @@ class _RegisterCodePageState extends State<RegisterCodePage> {
         break;
       case AuthSignUpStep.done:
         safePrint('Sign up is complete');
+        Fluttertoast.showToast(
+            msg: "Account created! Now you can sign in",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.grey[400],
+            textColor: Colors.black,
+            fontSize: 16.0);
         Navigator.pushAndRemoveUntil<dynamic>(
           context,
           PageTransition(
             type: PageTransitionType.fade,
-            child: const HomePage(),
+            child: const LoginPage(),
             duration: const Duration(milliseconds: 400),
           ),
           (route) => false,
@@ -156,7 +164,7 @@ class _RegisterCodePageState extends State<RegisterCodePage> {
                 height: 25,
               ),
               // welcome back text
-              const Text("Please enter a confirmation code",
+              const Text("Please enter a verification code",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black,
@@ -168,7 +176,7 @@ class _RegisterCodePageState extends State<RegisterCodePage> {
                 height: 5,
               ),
               const Text(
-                  "A confirmation code has been sent to your E-Mail address",
+                  "A verification code has been sent to your E-Mail address",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black,

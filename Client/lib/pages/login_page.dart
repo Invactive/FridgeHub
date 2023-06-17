@@ -6,17 +6,20 @@ import 'package:amplify_analytics_pinpoint/amplify_analytics_pinpoint.dart';
 import 'package:fridge_hub/pages/register_code_page.dart';
 import 'package:fridge_hub/pages/home_page.dart';
 import 'package:fridge_hub/pages/register_page.dart';
-import 'package:fridge_hub/pages/forgot_password_page.dart';
+import 'package:fridge_hub/pages/forgot_password_code_page.dart';
+import 'package:fridge_hub/pages/forgot_password_entry_page.dart';
 
 // Generated in previous step
 import '../amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
 import 'package:fridge_hub/components/animated_text_button.dart';
+import 'package:fridge_hub/components/animated_indicator_text_button.dart';
 import 'package:fridge_hub/components/custom_textfield.dart';
 import 'package:fridge_hub/components/custom_password_textfield.dart';
 import 'package:fridge_hub/components/animated_image_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:email_validator/email_validator.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -33,9 +36,17 @@ class _LoginPageState extends State<LoginPage> {
     signOutIn();
   }
 
+  bool isLoading = false;
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
   void signOutIn() async {
-    await _configureAmplify();
-    await signOutCurrentUser();
+    if (!Amplify.isConfigured) {
+      await _configureAmplify();
+      await signOutCurrentUser();
+    } else {
+      await signOutCurrentUser();
+    }
   }
 
   Future<void> _configureAmplify() async {
@@ -51,10 +62,27 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  bool validateEmail(TextEditingController email) {
+    final bool isValid = EmailValidator.validate(email.text.trim());
+    if (isValid) {
+      return true;
+    } else {
+      Fluttertoast.showToast(
+          msg: "Enter a valid E-Mail",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.grey[400],
+          textColor: Colors.black,
+          fontSize: 16.0);
+    }
+    return false;
+  }
 
   Future<void> signInUser(String username, String password) async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       final result = await Amplify.Auth.signIn(
         username: username,
@@ -63,6 +91,9 @@ class _LoginPageState extends State<LoginPage> {
       await _handleSignInResult(result);
     } on AuthException catch (e) {
       safePrint('Error signing in: ${e.message}');
+      setState(() {
+        isLoading = false;
+      });
       String message = e.message.endsWith('.')
           ? e.message.substring(0, e.message.length - 1)
           : e.message;
@@ -130,6 +161,11 @@ class _LoginPageState extends State<LoginPage> {
           ),
           (route) => false,
         );
+        Future.delayed(const Duration(milliseconds: 100), () {
+          setState(() {
+            isLoading = false;
+          });
+        });
         break;
     }
   }
@@ -158,7 +194,7 @@ class _LoginPageState extends State<LoginPage> {
         context,
         PageTransition(
           type: PageTransitionType.fade,
-          child: const ForgotPasswordPage(),
+          child: const ForgotPasswordEntryPage(),
           duration: const Duration(milliseconds: 400),
         ));
   }
@@ -262,10 +298,12 @@ class _LoginPageState extends State<LoginPage> {
                 height: 15,
               ),
               // sign in button
-              AnimatedTextButton(
+              AnimatedIndicatorTextButton(
                 text: "Sign In",
-                onPressed: () =>
-                    signInUser(emailController.text, passwordController.text),
+                isLoading: isLoading,
+                onPressed: () => validateEmail(emailController)
+                    ? signInUser(emailController.text, passwordController.text)
+                    : null,
               ),
               const SizedBox(
                 height: 15,

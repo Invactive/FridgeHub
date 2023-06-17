@@ -17,11 +17,21 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextInputType? keyboardType;
+    List<String>? autofillHints;
+
+    if (prefixIcon == const Icon(Icons.email)) {
+      keyboardType = TextInputType.emailAddress;
+      autofillHints = [AutofillHints.email];
+    }
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: padding),
       child: TextField(
         controller: controller,
         obscureText: obscureText,
+        keyboardType: keyboardType,
+        autofillHints: autofillHints,
         decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey.shade400),

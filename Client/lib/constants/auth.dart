@@ -1,0 +1,1 @@
+const passwordLengthPolicy = 8; // Change if policy changes

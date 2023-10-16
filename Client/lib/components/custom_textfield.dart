@@ -4,15 +4,20 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final bool obscureText;
-  final double padding;
+  final bool autocorrect;
+  final bool enableSuggestions;
+  final TextInputType? keyboardType;
   final Icon? prefixIcon;
+  static const double padding = 40.0;
 
   const CustomTextField(
       {super.key,
       required this.controller,
       required this.hintText,
       required this.obscureText,
-      required this.padding,
+      required this.autocorrect,
+      required this.enableSuggestions,
+      required this.keyboardType,
       this.prefixIcon});
 
   @override
@@ -20,13 +25,8 @@ class CustomTextField extends StatelessWidget {
     TextInputType? keyboardType;
     List<String>? autofillHints;
 
-    if (prefixIcon == const Icon(Icons.email)) {
-      keyboardType = TextInputType.emailAddress;
-      autofillHints = [AutofillHints.email];
-    }
-
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: padding),
+      padding: const EdgeInsets.symmetric(horizontal: padding),
       child: TextField(
         controller: controller,
         obscureText: obscureText,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// Addons Packages
 import 'package:bouncing_widget/bouncing_widget.dart';
 
 class AnimatedIndicatorTextButton extends StatefulWidget {
@@ -14,7 +15,7 @@ class AnimatedIndicatorTextButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AnimatedIndicatorTextButtonState createState() =>
+  State<AnimatedIndicatorTextButton> createState() =>
       _AnimatedIndicatorTextButtonState();
 }
 

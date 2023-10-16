@@ -1,0 +1,36 @@
+// Login exceptions
+class UserNotFoundAuthException implements Exception {}
+
+class WrongPasswordAuthException implements Exception {}
+
+class UserNotConfirmedAuthException implements Exception {
+  final String message;
+
+  UserNotConfirmedAuthException([String? message])
+      : message = message ?? 'User not verified. Confirm password to proceed.';
+
+  @override
+  String toString() {
+    return 'UserNotConfirmedAuthException: $message';
+  }
+}
+
+class ConfirmSignInWithNewPasswordAuthException implements Exception {}
+
+class PasswordAttemptsExceededAuthException implements Exception {}
+
+// Register exceptions
+class WeakPasswordAuthException implements Exception {}
+
+class EmailAlreadyInUseAuthException implements Exception {}
+
+class InvalidEmailAuthException implements Exception {}
+
+class InvalidNicknameAuthException implements Exception {}
+
+// Generic exceptions
+class GenericAuthException implements Exception {}
+
+class UserNotLoggedInAuthException implements Exception {}
+
+class UserShouldBeSetBeforeReadingAllNotes implements Exception {}
